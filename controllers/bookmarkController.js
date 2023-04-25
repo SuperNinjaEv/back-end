@@ -1,9 +1,9 @@
 
 const express = require("express");
 const bookmark = express.Router();
-const { getAllBookmarks, getABookmark } = require("../queries/bookmarks");
+const { getAllBookmarks, getABookmark, createBookmark } = require("../queries/bookmarks");
 
-// GET ALL
+// GET
 bookmark.get("/", async (req, res) => {
     const allBookmarks = await getAllBookmarks();
 
@@ -14,7 +14,7 @@ bookmark.get("/", async (req, res) => {
     }
 });
 
-// INDIVIDUAL
+// SHOW
 bookmark.get("/:id", async (req, res) => {
     const { id } = req.params;
     const bookmark = await getABookmark(id);
@@ -23,6 +23,18 @@ bookmark.get("/:id", async (req, res) => {
         res.status(202).json(bookmark);
     } else {
         res.status(500).json({ error: "Server Error" });
+    }
+});
+
+// CREATE
+bookmark.post("/", async (req, res) => {
+    const newBookmark = req.body;
+
+    try {
+        const addedBookmark = await createBookmark(newBookmark);
+        res.status(202).json(addedBookmark);
+    } catch (error) {
+        res.status(400).json({ error: error })
     }
 });
 
