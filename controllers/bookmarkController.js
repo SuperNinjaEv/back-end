@@ -1,7 +1,8 @@
 
 const express = require("express");
 const bookmark = express.Router();
-const { getAllBookmarks, getABookmark } = require("../queries/bookmarks")
+const { getAllBookmarks, getABookmark } = require("../queries/bookmarks");
+
 // GET ALL
 bookmark.get("/", async (req, res) => {
     const allBookmarks = await getAllBookmarks();
