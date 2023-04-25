@@ -1,7 +1,7 @@
 
 const express = require("express");
 const bookmark = express.Router();
-const { getAllBookmarks } = require("../queries/bookmarks")
+const { getAllBookmarks, getABookmark } = require("../queries/bookmarks")
 // GET ALL
 bookmark.get("/", async (req, res) => {
     const allBookmarks = await getAllBookmarks();
@@ -14,16 +14,16 @@ bookmark.get("/", async (req, res) => {
 });
 
 // INDIVIDUAL
-// bookmark.get("/:id", (req, res) => {
-//     const { id } = req.params;
-//     const bookmark = bookmarkArray[id];
+bookmark.get("/:id", async (req, res) => {
+    const { id } = req.params;
+    const bookmark = await getABookmark(id);
 
-//     if (bookmark){
-//         res.status(202).json(bookmark);
-//     } else {
-//         res.redirect(302, "/*");
-//     }
-// });
+    if (bookmark) {
+        res.status(202).json(bookmark);
+    } else {
+        res.status(500).json({ error: "Server Error" });
+    }
+});
 
 
 module.exports = bookmark;

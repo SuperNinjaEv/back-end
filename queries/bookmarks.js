@@ -6,12 +6,20 @@ const getAllBookmarks = async () => {
         const allBookmarks = await db.any("SELECT * FROM bookmarks");
         return allBookmarks;
     } catch (error) {
-
+        return error;
     }
 };
 
-// const getABookmark = async () => {};
+const getABookmark = async (id) => {
+    try {
+        const bookmark = await db.one("SELECT * FROM bookmarks WHERE id=$1", id);
+        return bookmark;
+    } catch (error) {
+        return error;
+    }
+};
 
 module.exports = {
     getAllBookmarks,
+    getABookmark
 };

@@ -1,7 +1,7 @@
 const express = require("express");
 const app = express();
 const cors = require("cors");
-const bookmarkController = require("./controllers/bookmarkControllers");
+const bookmarkController = require("./controllers/bookmarkController");
 
 app.use(express.json());
 app.use(cors());
