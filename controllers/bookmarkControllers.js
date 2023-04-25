@@ -13,16 +13,16 @@ bookmark.get("/", (req, res) => {
 });
 
 // INDIVIDUAL
-bookmark.get("/:id", (req, res) => {
-    const { id } = req.params;
-    const bookmark = bookmarkArray[id];
+// bookmark.get("/:id", (req, res) => {
+//     const { id } = req.params;
+//     const bookmark = bookmarkArray[id];
 
-    if (bookmark){
-        res.status(202).json(bookmark);
-    } else {
-        res.redirect(302, "/*");
-    }
-});
+//     if (bookmark){
+//         res.status(202).json(bookmark);
+//     } else {
+//         res.redirect(302, "/*");
+//     }
+// });
 
 
 module.exports = bookmark;
