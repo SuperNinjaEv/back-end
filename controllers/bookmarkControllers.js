@@ -1,14 +1,15 @@
 
 const express = require("express");
 const bookmark = express.Router();
-// const bookmarkArray = require("");
-
+const { getAllBookmarks } = require("../queries/bookmarks")
 // GET ALL
-bookmark.get("/", (req, res) => {
-    if (res) {
-        res.status(202).json(bookmarkArray);
+bookmark.get("/", async (req, res) => {
+    const allBookmarks = await getAllBookmarks();
+
+    if (allBookmarks) {
+        res.status(202).json(allBookmarks);
     } else {
-        res.status(400).json({ error: "Model not found" });
+        res.status(500).json({ error: "Server Error" });
     }
 });
 
