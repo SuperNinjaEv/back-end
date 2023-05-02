@@ -1,73 +1,59 @@
-
 const express = require("express");
-const bookmark = express.Router();
+const bookmarks = express.Router();
 const {
     getAllBookmarks,
-    getABookmark,
+    getBookmark,
     createBookmark,
     deleteBookmark,
-    updateBookmark } = require("../queries/bookmarks");
-const { checkRequest, checkId } = require("../validations/checkBookmarks");
+    updateBookmark,
+} = require("../queries/bookmarks");
+const { checkName, checkBoolean } = require("../validations/checkBookmarks.js");
 
-// GET
-bookmark.get("/", async (req, res) => {
+bookmarks.get("/", async (req, res) => {
     const allBookmarks = await getAllBookmarks();
-
-    if (allBookmarks) {
-        res.status(202).json(allBookmarks);
+    if (allBookmarks[0]) {
+        res.status(200).json(allBookmarks);
     } else {
-        res.status(500).json({ error: "Server Error" });
-    };
+        res.status(500).json({ error: "server error" });
+    }
 });
 
 // SHOW
-bookmark.get("/:id", checkId, async (req, res) => {
+bookmarks.get("/:id", async (req, res) => {
     const { id } = req.params;
-    const bookmark = await getABookmark(id);
-
+    const bookmark = await getBookmark(id);
     if (bookmark) {
-        res.status(202).json(bookmark);
+        res.json(bookmark);
     } else {
-        res.status(500).json({ error: "Server Error" });
-    };
+        res.status(404).json({ error: "not found" });
+    }
 });
 
-// CREATE ROUTE
-bookmark.post("/", checkRequest, async (req, res) => {
-    const newBookmark = req.body;
-
+// CREATE
+bookmarks.post("/", checkBoolean, checkName, async (req, res) => {
     try {
-        const addedBookmark = await createBookmark(newBookmark);
-        res.status(202).json(addedBookmark);
+        const bookmark = await createBookmark(req.body);
+        res.json(bookmark);
     } catch (error) {
         res.status(400).json({ error: error });
-    };
+    }
 });
 
-// DELETE ROUTE
-bookmark.delete("/:id", checkId, async (req, res) => {
+bookmarks.delete("/:id", async (req, res) => {
     const { id } = req.params;
-
-    try {
-        const deletedBookmark = await deleteBookmark(id);
+    const deletedBookmark = await deleteBookmark(id);
+    if (deletedBookmark.id) {
         res.status(200).json(deletedBookmark);
-    } catch (error) {
-        res.status(400).json({ error: error });
-    };
+    } else {
+        res.status(404).json("Bookmark not found");
+    }
 });
 
-// UPDATE ROUTE
-bookmark.put("/:id", checkId, checkRequest, async (req, res) => {
+// UPDATE
+bookmarks.put("/:id", checkName, checkBoolean, async (req, res) => {
     const { id } = req.params;
-    const { body } = req;
-
-    try {
-        const updatedBookmark = await updateBookmark(id, body);
-        res.status(200).json(updatedBookmark);
-    } catch (error) {
-        res.status(400).json({ error: error });
-    };
+    const updatedBookmark = await updateBookmark(id, req.body);
+    res.status(200).json(updatedBookmark);
 });
 
-
-module.exports = bookmark;
+module.exports = bookmarks;
